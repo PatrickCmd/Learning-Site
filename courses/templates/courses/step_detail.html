@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load course_extras %}
+
+{% block title %}
+    {{ step.title }}-{{ step.course.title }}
+{% endblock %}
+
+{% block content %}
+    <article>
+        <h2>
+            <a href="{% url 'courses:course_detail' step.course.pk %}">{{ step.course.title }}</a>
+        </h2>
+        <h3>{{ step.title }}: <small>{{ step.description }}</small></h3>
+
+        {% with cont=step.content %}  <!--step.content-->
+            {{ cont|linebreaks }} Content: {{ cont|wordcount }} words. 
+            Estimated time to complete: {{ cont|wordcount|time_estimate }} minute{{ cont|wordcount|time_estimate|pluralize }}
+        {% endwith %}
+    </article>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% load static from staticfiles %}
+{% load course_extras %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Project{% endblock %}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="{% static 'css/layout.css' %}" rel="stylesheet">
+        {% block static %}{% endblock %}
+    </head>
+    <body>
+        <div class="site-container">
+            <nav>
+                <a href="{% url 'courses:course_list' %}">Courses</a>
+            </nav>
+            {% block content %}
+            {% endblock %}
+
+            <hr />
+            {% block footer %}
+                <div class="footer">
+                    {% nav_course_list %}
+                    <p>Copyright Reserverd &copy; 2018</p>
+                </div>
+        {% endblock %}
+        </div>
+
+    </body>
+</html>

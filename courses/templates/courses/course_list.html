@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load course_extras %}
+
+{% block static %}
+    <link href="{% static 'courses/css/courses.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+    Courses-{{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <div class="cards">
+        {% for course in courses %}
+            <div class="card">
+                <header>
+                    <a href="{% url 'courses:course_detail' course.pk %}">{{ course.title }}</a>
+                </header>
+                <div class="card-copy">
+                    <p>{{ course.description }}</p>
+                </div>
+                <div>Created on: {{ course.created_at|date:"F j, Y" }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    <p>Do not miss out on our latest course: {% newest_course %}</p>
+    Have any questions contact us: {{ email|urlize }}
+{% endblock %}

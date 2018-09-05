@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load course_extras %}
+
+{% block title %}
+    {{ course.title }}-{{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {% if course %}
+        <article>
+            <h2>{{ course.title }}</h2>
+            <p>{{ course.description|markdown_to_html }}</p>
+
+            <h2>{{ course.step_set.count }} Step{{ course.step_set.count|pluralize }} in this course</h2>
+            {% for step in course.step_set.all %}
+                <h3><a href="{% url 'courses:step_detail' step.course.pk step.pk %}">{{ step.title }}</a></h3>
+                {{ step.description }}
+            {% empty %}
+                <p>This course has no steps yet</p>
+            {% endfor %}
+        </article>
+    {% endif %}
+{% endblock %}
