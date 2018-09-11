@@ -1,4 +1,47 @@
-{% extends "base.html" %}
+{% extends "courses/layout.html" %}
+{% load course_extras %}
+
+{% block title %}All{% endblock %}
+
+{% block content %}
+    <div class="row columns">
+        {{ block.super }}
+    </div>
+    <div class="row">
+        <p><strong>Total number of Quiz and Text steps: </strong>{{ total.total }}</p>
+        {%  for course in courses %}
+            <div class="small-6 columns">
+                <div class="callout">
+                    <h5><a href="{% url 'courses:course_detail' pk=course.pk %}">{{ course.title }}</a></h5>
+                    <div class="card-copy">
+                        {{ course.description|markdown_to_html }}
+                        <br>
+                        {% if course.total_steps %}
+                            <p><strong>Steps: </strong>{{ course.total_steps }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>Created on: {{ course.created_at|date:"F j, Y" }}</div>
+            </div>
+
+            {% if forloop.counter|divisibleby:"2" %}
+                </div>
+                <div class="row">
+            {% endif %}
+        {% empty %}
+            <p>No courses here yet</p>
+        {% endfor %}
+        <hr>
+        <div class="row">
+            <p>Do not miss out on our latest course: {% newest_course %}</p>
+            Have any questions contact us: {{ email|urlize }}
+        </div>
+    </div>
+{% endblock %}
+
+
+{% comment %}
+<!-- {% extends "base.html" %}
 {% load static from staticfiles %}
 {% load course_extras %}
 
@@ -26,4 +69,5 @@
     </div>
     <p>Do not miss out on our latest course: {% newest_course %}</p>
     Have any questions contact us: {{ email|urlize }}
-{% endblock %}
+{% endblock %} -->
+{% endcomment %}

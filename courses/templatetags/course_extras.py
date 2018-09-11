@@ -13,16 +13,19 @@ def newest_course():
     """
     Returns the newest course added in the Library
     """
-    course = Course.objects.latest('created_at')
+    course = Course.objects.filter(published=True).latest('created_at')
     return course
 
 
 @register.inclusion_tag("courses/course_nav.html")
-def nav_course_list():
+def nav_courses_list():
     """
     Returns a dictionary of courses to display as a nav
     """
-    courses = Course.objects.all()
+    # courses = Course.objects.all()[:5]
+    # courses = Course.objects.filter(published=True)[:5]
+    courses = Course.objects.filter(
+        published=True).order_by('-created_at').values('id', 'title')[:5]
     cxt = {
         "courses": courses,
     }
