@@ -1,7 +1,15 @@
+import math
+
+from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from django.db import models
+
+STATUS_CHOICES =  (
+    ('i', 'In Progress'),
+    ('r', 'In Review'),
+    ('p', 'Published')
+)
 
 
 class Course(models.Model):
@@ -12,9 +20,14 @@ class Course(models.Model):
     teacher = models.ForeignKey(User, on_delete='models.CASCADE')
     subject = models.CharField(max_length=100, default='')
     published = models.BooleanField(default=False)
+    status  = models.CharField(max_length=1, choices=STATUS_CHOICES, default='i')
 
     def __str__(self):
         return self.title
+    
+    def time_to_complete(self):
+        from courses.templatetags.course_extras import time_estimate
+        return '{} min'.format(time_estimate(len(self.description.split())))
 
 
 class Step(models.Model):
@@ -52,6 +65,10 @@ class Quiz(Step):
     def get_absolute_url(self):
         return reverse("courses:quiz_detail",
                        kwargs={"course_pk": self.course_id, "step_pk": self.pk})
+    
+    def number_correct_needed(self):
+        return '{}/{}'.format(math.ceil(self.total_questions * 0.7),
+                              self.total_questions)
 
 
 class Question(models.Model):
@@ -62,11 +79,11 @@ class Question(models.Model):
     class Meta:
         ordering = ['order',]
     
-    def get_absolute_url(self):
-        return self.quiz.get_absolute_url()
-
     def __str__(self):
         return self.prompt
+    
+    def get_absolute_url(self):
+        return self.quiz.get_absolute_url()
 
 
 class MultipleChoiceQuestion(Question):
